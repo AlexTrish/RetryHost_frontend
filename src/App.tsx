@@ -83,29 +83,29 @@ function AppContent() {
     const menuItems = [
       {
         name: 'services',
-        label: 'Services',
+        label: t('menu.services.services'),
         dropdown: true,
         items: [
-          { label: 'Virtual Hosting', icon: Cloud },
-          { label: 'VPS/VDS', icon: Server },
-          { label: 'Domain Registration', icon: Globe },
-          { label: 'SSL Certificates', icon: Shield },
+          { label: t('menu.services.virtual'), icon: Cloud, href: '/hosting' },
+          { label: 'VPS/VDS', icon: Server, href: '/vps-vds' },
+          { label: 'VPN', icon: Shield, href: '/VPN' },
+          { label: t('menu.services.domain'), icon: Globe, href: '/domain' },
         ],
       },
       {
         name: 'referral',
-        label: 'Referral Program',
+        label: t('menu.referral'),
         href: '/referral',
       },
       {
         name: 'about',
-        label: 'About Us',
+        label: t('menu.about.about'),
         dropdown: true,
         items: [
-          { label: 'Company Info' },
-          { label: 'Terms of Service' },
-          { label: 'Privacy Policy' },
-          { label: 'Contact Us' },
+          { label: t('menu.about.company') },
+          { label: t('menu.about.terms') },
+          { label: t('menu.about.privacy') },
+          { label: t('menu.about.contact') },
         ],
       },
     ];
@@ -119,7 +119,7 @@ function AppContent() {
         `}>
           <li>
             <a href="/" className="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400">
-              Main
+              {t('menu.home')}
             </a>
           </li>
           {menuItems.map((item) => (
@@ -558,39 +558,34 @@ function AppContent() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid md:grid-cols-4 gap-8">
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.company')}</h3>
+                    <h3 className="text-lg font-semibold mb-4">{t('footer.company.company')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>About Us</li>
-                      <li>Contact</li>
-                      <li>Blog</li>
-                      <li>Careers</li>
+                      <li>{t('footer.company.about')}</li>
+                      <li>{t('footer.company.contact')}</li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.services')}</h3>
+                    <h3 className="text-lg font-semibold mb-4">{t('footer.services.services')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>Virtual Hosting</li>
+                      <li>{t('footer.services.hosting')}</li>
                       <li>VPS/VDS</li>
-                      <li>Domains</li>
-                      <li>SSL Certificates</li>
+                      <li>VPN</li>
+                      <li>{t('footer.services.domain')}</li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.support')}</h3>
+                    <h3 className="text-lg font-semibold mb-4">{t('footer.support.support')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>Help Center</li>
-                      <li>Documentation</li>
-                      <li>Status</li>
-                      <li>API</li>
+                      <li>{t('footer.support.help')}</li>
+                      <li>support@retry.host</li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.legal')}</h3>
+                    <h3 className="text-lg font-semibold mb-4">{t('footer.legal.legal')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>Privacy Policy</li>
-                      <li>Terms of Service</li>
-                      <li>Security</li>
-                      <li>Compliance</li>
+                      <li>{t('footer.legal.privacy')}</li>
+                      <li>{t('footer.legal.terms')}</li>
+                      <li>{t('footer.legal.security')}</li>
                     </ul>
                   </div>
                 </div>

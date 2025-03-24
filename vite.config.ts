@@ -5,9 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 81,
-    host: true,
-    allowedHosts: ['lending.retry.host']
+    port: 5125,
+    // host: true,
+    // allowedHosts: ['lending.retry.host']
   },
   optimizeDeps: {
     exclude: ['lucide-react'],

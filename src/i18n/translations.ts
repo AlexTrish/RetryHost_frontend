@@ -13,6 +13,22 @@ export const translations = {
         logout: 'Log out',
         or: 'or'
       },
+      menu: {
+        home: 'Home',
+        services: {
+          services: 'Services',
+          virtual: 'Virtual Hosting',
+          domain: 'Domain Registration'
+        },
+        referral: 'Referral Program',
+        about: {
+          about: 'About Us',
+          company: 'Company Info',
+          terms: 'Terms of Service',
+          privacy: 'Privacy Policy',
+          contact: 'Contact Us'
+        }
+      },
       hero: {
         title: 'Fast, Secure & Reliable Hosting',
         subtitle: 'Get Started Today!',
@@ -53,10 +69,26 @@ export const translations = {
         title: 'What Our Clients Say'
       },
       footer: {
-        company: 'Company',
-        services: 'Services',
-        support: 'Support',
-        legal: 'Legal'
+        company: {
+          company: 'Company',
+          about: 'About Us',
+          contact: 'Contacts',
+        },
+        services: {
+          services: 'Services',
+          hosting: 'Virtual Hosting',
+          domain: 'Domain'
+        },
+        support: {
+          support: 'Support',
+          help: 'Help Center',
+        },
+        legal: {
+          legal: 'Legal',
+          privacy: 'Privacy Policy',
+          terms: 'Terms of Service',
+          security: 'Security'
+        }
       },
       theme: {
         light: 'Light',
@@ -77,6 +109,22 @@ export const translations = {
         forgotPassword: 'Забыли пароль?',
         logout: 'Выход',
         or: 'или'
+      },
+      menu: {
+        home: 'Главная',
+        services: {
+          services: 'Услуги',
+          virtual: 'Виртуальный Хостинг',
+          domain: 'Регистрация Доменов'
+        },
+        referral: 'Реферальная система',
+        about: {
+          about: 'О Нас',
+          company: 'Информация о Компании',
+          terms: 'Правила Предоставления Услуг',
+          privacy: 'Политика Конфиденциальности',
+          contact: 'Контакты'
+        }
       },
       hero: {
         title: 'Быстрый, Безопасный и Надежный Хостинг',
@@ -118,10 +166,26 @@ export const translations = {
         title: 'Что Говорят Наши Клиенты'
       },
       footer: {
-        company: 'Компания',
-        services: 'Услуги',
-        support: 'Поддержка',
-        legal: 'Юридическая информация'
+        company: {
+          company: 'Компания',
+          about: 'О Нас',
+          contact: 'Контакты',
+        },
+        services: {
+          services: 'Услуги',
+          hosting: 'Виртуальный Хостинг',
+          domain: 'Домены'
+        },
+        support: {
+          support: 'Поддержка',
+          help: 'Центр поддержки',
+        },
+        legal: {
+          legal: 'Юридическая информация',
+          privacy: 'Политика Конфиденциальности',
+          terms: 'Правила Предоставления Услуг',
+          security: 'Безопастность'
+        }
       },
       theme: {
         light: 'Светлая',
