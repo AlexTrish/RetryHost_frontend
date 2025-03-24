@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 81,
-    // host: true,
-    // allowedHosts: ['lending.retry.host']
+    host: true,
+    allowedHosts: ['lending.retry.host']
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
