@@ -477,12 +477,14 @@ function AppContent() {
                 >
                   <PricingCard
                     name={t('pricing.plans.starter')}
-                    price="9.99"
+                    price="15.99"
                     features={[
                       "2GB RAM",
                       "20GB SSD Storage",
-                      "Unlimited Bandwidth",
-                      "Free SSL Certificate"
+                      "1 CPU",
+                      "250 MB/s",
+                      "24/7 Priority Support",
+                      " "
                     ]}
                   />
                   <PricingCard
@@ -490,23 +492,22 @@ function AppContent() {
                     price="29.99"
                     popular={true}
                     features={[
-                      "8GB RAM",
-                      "100GB SSD Storage",
-                      "Unlimited Bandwidth",
-                      "Free SSL Certificate",
-                      "Daily Backups",
-                      "24/7 Priority Support"
+                      "4GB RAM",
+                      "40GB SSD Storage",
+                      "3 CPU",
+                      "250 MB/s",
+                      "24/7 Priority Support",
+                      " "
                     ]}
                   />
                   <PricingCard
                     name={t('pricing.plans.enterprise')}
-                    price="79.99"
+                    price="39.99"
                     features={[
                       "32GB RAM",
-                      "500GB SSD Storage",
-                      "Unlimited Bandwidth",
-                      "Free SSL Certificate",
-                      "Daily Backups",
+                      "480GB SSD Storage",
+                      "8 CPU",
+                      "1 GB/s",
                       "24/7 Priority Support",
                       "DDoS Protection"
                     ]}

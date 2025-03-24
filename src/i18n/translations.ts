@@ -10,6 +10,7 @@ export const translations = {
         loginButton: 'Sign In',
         registerButton: 'Create Account',
         forgotPassword: 'Forgot Password?',
+        logout: 'Log out',
         or: 'or'
       },
       hero: {
@@ -45,7 +46,7 @@ export const translations = {
         plans: {
           starter: 'Starter',
           professional: 'Professional',
-          enterprise: 'Enterprise'
+          enterprise: 'Premium'
         }
       },
       testimonials: {
@@ -74,6 +75,7 @@ export const translations = {
         loginButton: 'Войти',
         registerButton: 'Создать аккаунт',
         forgotPassword: 'Забыли пароль?',
+        logout: 'Выход',
         or: 'или'
       },
       hero: {
@@ -107,9 +109,9 @@ export const translations = {
         perMonth: '/месяц',
         getStarted: 'Начать',
         plans: {
-          starter: 'Начальный',
+          starter: 'Базовый',
           professional: 'Профессиональный',
-          enterprise: 'Корпоративный'
+          enterprise: 'Премиальный'
         }
       },
       testimonials: {

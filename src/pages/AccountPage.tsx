@@ -99,7 +99,7 @@ export const AccountPage: React.FC = () => {
           <h3 className="text-lg font-semibold mb-2">Balance</h3>
           <p className="text-3xl font-bold text-primary-500">${balance.toFixed(2)}</p>
           <button className="mt-4 text-primary-500 hover:text-primary-600 font-medium">
-            Add Funds
+            Buy tokens
           </button>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
