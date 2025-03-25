@@ -5,6 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AccountPage } from './pages/AccountPage';
+import { HostingPage } from './pages/HostingPage';
+import { VPSPage } from './pages/VPSPage';
+import { VPNPage } from './pages/VPNPage';
+import { DomainPage } from './pages/DomainPage';
 import './i18n/i18n';
 import './shimmer.css';
 
@@ -26,6 +30,7 @@ function AppContent() {
   const [loginError, setLoginError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [currentPage, setCurrentPage] = useState('home');
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -86,10 +91,26 @@ function AppContent() {
         label: t('menu.services.services'),
         dropdown: true,
         items: [
-          { label: t('menu.services.virtual'), icon: Cloud, href: '/hosting' },
-          { label: 'VPS/VDS', icon: Server, href: '/vps-vds' },
-          { label: 'VPN', icon: Shield, href: '/VPN' },
-          { label: t('menu.services.domain'), icon: Globe, href: '/domain' },
+          { 
+            label: t('menu.services.virtual'), 
+            icon: Cloud,
+            onClick: () => setCurrentPage('hosting')
+          },
+          { 
+            label: 'VPS/VDS', 
+            icon: Server,
+            onClick: () => setCurrentPage('vps')
+          },
+          { 
+            label: 'VPN', 
+            icon: Shield,
+            onClick: () => setCurrentPage('vpn')
+          },
+          { 
+            label: t('menu.services.domain'), 
+            icon: Globe,
+            onClick: () => setCurrentPage('domain')
+          },
         ],
       },
       {
@@ -157,6 +178,7 @@ function AppContent() {
                     <a
                       key={index}
                       href="#"
+                      onClick={subItem.onClick}
                       className={`
                         ${isMobile
                           ? 'flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400'
@@ -197,186 +219,18 @@ function AppContent() {
     </motion.div>
   );
 
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
-      {showAccountPage ? (
-        <ProtectedRoute>
-          <AccountPage onBack={() => setShowAccountPage(false)} />
-        </ProtectedRoute>
-      ) : (
-        <>
-          {/* Header with Navigation */}
-          <header className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 z-40">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-16">
-                {/* Logo and Navigation */}
-                <div className="flex items-center">
-                  <a href="/" className="text-2xl font-bold text-primary-500">
-                    RetryHost
-                  </a>
-                  <div className="ml-8">
-                    <NavigationMenu />
-                  </div>
-                </div>
-
-                {/* Mobile Menu Button */}
-                <button
-                  onClick={() => setIsMenuOpen(true)}
-                  className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                >
-                  <Menu className="h-6 w-6" />
-                </button>
-
-                {/* Theme, Language, and Auth Buttons */}
-                <div className="hidden md:flex items-center space-x-4">
-                  {user ? (
-                    <>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowAccountPage(true)}
-                        className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
-                      >
-                        {t('auth.account')}
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleLogout}
-                        className="px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-semibold"
-                      >
-                        {t('auth.logout')}
-                      </motion.button>
-                    </>
-                  ) : (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setShowAuthModal(true)}
-                      className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
-                    >
-                      {t('auth.login')}
-                    </motion.button>
-                  )}
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  </button>
-                  <button
-                    onClick={toggleLanguage}
-                    className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    {i18n.language === 'en' ? 'RU' : 'EN'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {isMenuOpen && (
-              <>
-                <div
-                  className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                  onClick={() => setIsMenuOpen(false)}
-                />
-                <MobileMenu />
-              </>
-            )}
-          </AnimatePresence>
-
-          {/* Auth Modal */}
-          <AnimatePresence>
-            {showAuthModal && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                onClick={(e) => {
-                  if (e.target === e.currentTarget) setShowAuthModal(false);
-                }}
-              >
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-8 w-full max-w-md relative"
-                >
-                  <button
-                    onClick={() => setShowAuthModal(false)}
-                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                  
-                  <div className="flex justify-center space-x-4 mb-8">
-                    <button
-                      onClick={() => setIsLogin(true)}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        isLogin
-                          ? 'bg-primary-500 text-white'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {t('auth.login')}
-                    </button>
-                    <button
-                      onClick={() => setIsLogin(false)}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        !isLogin
-                          ? 'bg-primary-500 text-white'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {t('auth.register')}
-                    </button>
-                  </div>
-
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        {t('auth.email')}
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        {t('auth.password')}
-                      </label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      />
-                    </div>
-                    {loginError && (
-                      <div className="text-red-500 text-sm">{loginError}</div>
-                    )}
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      type="submit"
-                      className="w-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
-                    >
-                      {isLogin ? t('auth.loginButton') : t('auth.registerButton')}
-                    </motion.button>
-                  </form>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Main Content */}
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'hosting':
+        return <HostingPage />;
+      case 'vps':
+        return <VPSPage />;
+      case 'vpn':
+        return <VPNPage />;
+      case 'domain':
+        return <DomainPage />;
+      default:
+        return (
           <div className="pt-16">
             {/* Hero Section */}
             <header className="relative overflow-hidden">
@@ -567,9 +421,9 @@ function AppContent() {
                   <div>
                     <h3 className="text-lg font-semibold mb-4">{t('footer.services.services')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>{t('footer.services.hosting')}</li>
-                      <li>VPS/VDS</li>
-                      <li>VPN</li>
+                      <li><a href="" onClick={() => setCurrentPage('hosting')}>{t('footer.services.hosting')}</a></li>
+                      <li><a href="" onClick={() => setCurrentPage('vps')}>VPS/VDS</a></li>
+                      <li><a href="" onClick={() => setCurrentPage('vpn')}>VPN</a></li>
                       <li>{t('footer.services.domain')}</li>
                     </ul>
                   </div>
@@ -595,6 +449,190 @@ function AppContent() {
               </div>
             </footer>
           </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
+      {showAccountPage ? (
+        <ProtectedRoute>
+          <AccountPage onBack={() => setShowAccountPage(false)} />
+        </ProtectedRoute>
+      ) : (
+        <>
+          <header className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 z-40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-16">
+                <div className="flex items-center">
+                  <a href="/" onClick={() => setCurrentPage('home')} className='mr-4'>
+                    <img src="/Logo.svg" alt="RetryHost Logo" className="h-8 w-8" />
+                  </a>
+                  <a href="/" onClick={() => setCurrentPage('home')} className="text-2xl font-bold text-primary-500">
+                    RetryHost
+                  </a>
+                  <div className="ml-8">
+                    <NavigationMenu />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsMenuOpen(true)}
+                  className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                >
+                  <Menu className="h-6 w-6" />
+                </button>
+
+                {/* Theme, Language, and Auth Buttons */}
+                <div className="hidden md:flex items-center space-x-4">
+                  {user ? (
+                    <>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowAccountPage(true)}
+                        className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
+                      >
+                        {t('auth.account')}
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleLogout}
+                        className="px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-semibold"
+                      >
+                        {t('auth.logout')}
+                      </motion.button>
+                    </>
+                  ) : (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowAuthModal(true)}
+                      className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
+                    >
+                      {t('auth.login')}
+                    </motion.button>
+                  )}
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  </button>
+                  <button
+                    onClick={toggleLanguage}
+                    className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {i18n.language === 'en' ? 'RU' : 'EN'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                  onClick={() => setIsMenuOpen(false)}
+                />
+                <MobileMenu />
+              </>
+            )}
+          </AnimatePresence>
+
+          {/* Auth Modal */}
+          <AnimatePresence>
+            {showAuthModal && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) setShowAuthModal(false);
+                }}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-8 w-full max-w-md relative"
+                >
+                  <button
+                    onClick={() => setShowAuthModal(false)}
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                  
+                  <div className="flex justify-center space-x-4 mb-8">
+                    <button
+                      onClick={() => setIsLogin(true)}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        isLogin
+                          ? 'bg-primary-500 text-white'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {t('auth.login')}
+                    </button>
+                    <button
+                      onClick={() => setIsLogin(false)}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        !isLogin
+                          ? 'bg-primary-500 text-white'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {t('auth.register')}
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {t('auth.email')}
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {t('auth.password')}
+                      </label>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      />
+                    </div>
+                    {loginError && (
+                      <div className="text-red-500 text-sm">{loginError}</div>
+                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      className="w-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
+                    >
+                      {isLogin ? t('auth.loginButton') : t('auth.registerButton')}
+                    </motion.button>
+                  </form>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {renderPage()}
         </>
       )}
     </div>
