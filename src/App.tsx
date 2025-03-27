@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Shield, Cloud, Server, Globe, ChevronRight, Star, CheckCircle, Sun, Moon, X, Menu, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AccountPage } from './pages/AccountPage';
@@ -22,7 +23,7 @@ function AppContent() {
     return 'dark';
   });
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false); // Set to false to show registration by default
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState('');
   const [showAccountPage, setShowAccountPage] = useState(false);
@@ -42,6 +43,7 @@ function AppContent() {
   const handleLogout = () => {
     logout();
     setShowAccountPage(false);
+    setCurrentPage('home');
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -139,7 +141,14 @@ function AppContent() {
             : 'hidden md:flex items-center space-x-8'}
         `}>
           <li>
-            <a href="/" className="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400">
+            <a 
+              href="#" 
+              onClick={() => {
+                setCurrentPage('home');
+                if (isMobile) setIsMenuOpen(false);
+              }} 
+              className="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400"
+            >
               {t('menu.home')}
             </a>
           </li>
@@ -178,7 +187,13 @@ function AppContent() {
                     <a
                       key={index}
                       href="#"
-                      onClick={subItem.onClick}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (subItem.onClick) {
+                          subItem.onClick();
+                          if (isMobile) setIsMenuOpen(false);
+                        }
+                      }}
                       className={`
                         ${isMobile
                           ? 'flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400'
@@ -214,6 +229,65 @@ function AppContent() {
         </button>
         <div className="mt-8">
           <NavigationMenu isMobile={true} />
+          
+          {/* Theme and Language Controls */}
+          <div className="mt-6 space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center w-full px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5 mr-2" /> : <Moon className="h-5 w-5 mr-2" />}
+              {theme === 'dark' ? t('theme.light') : t('theme.dark')}
+            </button>
+            
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center w-full px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+            >
+              <Globe className="h-5 w-5 mr-2" />
+              {i18n.language === 'en' ? 'Русский' : 'English'}
+            </button>
+
+            {/* Auth Button */}
+            {user ? (
+              <div className="space-y-2">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setShowAccountPage(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
+                >
+                  {t('auth.account')}
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-semibold"
+                >
+                  {t('auth.logout')}
+                </motion.button>
+              </div>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setShowAuthModal(true);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
+              >
+                {t('auth.login')}
+              </motion.button>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -260,6 +334,10 @@ function AppContent() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setIsLogin(false); // Set to registration mode
+                        setShowAuthModal(true);
+                      }}
                       className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold flex items-center"
                     >
                       {t('hero.getStarted')} <ChevronRight className="ml-2 h-5 w-5" />
@@ -338,7 +416,6 @@ function AppContent() {
                       "1 CPU",
                       "250 MB/s",
                       "24/7 Priority Support",
-                      " "
                     ]}
                   />
                   <PricingCard
@@ -351,7 +428,6 @@ function AppContent() {
                       "3 CPU",
                       "250 MB/s",
                       "24/7 Priority Support",
-                      " "
                     ]}
                   />
                   <PricingCard
@@ -421,9 +497,9 @@ function AppContent() {
                   <div>
                     <h3 className="text-lg font-semibold mb-4">{t('footer.services.services')}</h3>
                     <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li><a href="" onClick={() => setCurrentPage('hosting')}>{t('footer.services.hosting')}</a></li>
-                      <li><a href="" onClick={() => setCurrentPage('vps')}>VPS/VDS</a></li>
-                      <li><a href="" onClick={() => setCurrentPage('vpn')}>VPN</a></li>
+                      <li><a href="#" onClick={() => setCurrentPage('hosting')}>{t('footer.services.hosting')}</a></li>
+                      <li><a href="#" onClick={() => setCurrentPage('vps')}>VPS/VDS</a></li>
+                      <li><a href="#" onClick={() => setCurrentPage('vpn')}>VPN</a></li>
                       <li>{t('footer.services.domain')}</li>
                     </ul>
                   </div>
@@ -455,6 +531,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
+      <Toaster />
       {showAccountPage ? (
         <ProtectedRoute>
           <AccountPage onBack={() => setShowAccountPage(false)} />
@@ -465,11 +542,9 @@ function AppContent() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 <div className="flex items-center">
-                  <a href="/" onClick={() => setCurrentPage('home')} className='mr-4'>
+                  <a href="#" onClick={() => setCurrentPage('home')} className="flex items-center space-x-2">
                     <img src="/Logo.svg" alt="RetryHost Logo" className="h-8 w-8" />
-                  </a>
-                  <a href="/" onClick={() => setCurrentPage('home')} className="text-2xl font-bold text-primary-500">
-                    RetryHost
+                    <span className="text-2xl font-bold text-primary-500">RetryHost</span>
                   </a>
                   <div className="ml-8">
                     <NavigationMenu />
@@ -680,7 +755,7 @@ const PricingCard = motion(({ name, price, features, popular = false }) => {
             : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
         }`}
       >
-        {t('pricing.getStarted')}
+        {t('pricing.getStart')}
       </motion.button>
     </div>
   );

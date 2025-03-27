@@ -22,3 +22,16 @@
   background-size: 400% 400%;
   animation: shimmer 8s ease infinite;
 }
+
+.account-shimmer-bg {
+  background: linear-gradient(
+    -45deg,
+    rgba(26, 187, 143, 0.1) 0%,
+    rgba(26, 187, 143, 0.05) 25%,
+    rgba(26, 187, 143, 0.1) 50%,
+    rgba(26, 187, 143, 0.05) 75%,
+    rgba(26, 187, 143, 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: shimmer 12s ease infinite;
+}

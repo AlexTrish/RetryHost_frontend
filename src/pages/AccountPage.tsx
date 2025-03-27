@@ -93,7 +93,7 @@ export const AccountPage: React.FC = () => {
   ];
 
   const renderDashboard = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 rounded-lg">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Balance</h3>
@@ -132,8 +132,8 @@ export const AccountPage: React.FC = () => {
   );
 
   const renderServices = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 rounded-lg">
+      <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-5 rounded-lg">
         <h3 className="text-lg font-semibold">Your Services</h3>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -306,7 +306,7 @@ export const AccountPage: React.FC = () => {
   );
 
   const renderBilling = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 rounded-lg">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Payment Methods</h3>
         <div className="space-y-4">
@@ -370,7 +370,7 @@ export const AccountPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800 pt-16">
+    <div className="min-h-screen account-shimmer-bg pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid md:grid-cols-4 gap-6">
           {/* Sidebar */}
