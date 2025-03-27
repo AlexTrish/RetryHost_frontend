@@ -534,6 +534,12 @@ function AppContent() {
       <Toaster />
       {showAccountPage ? (
         <ProtectedRoute>
+          <div className='mx-auto px-4 sm:px-6 lg:px-8 py-3'>
+            <a href="#" onClick={() => { setShowAccountPage(false); setCurrentPage('home'); }} className="flex items-center space-x-2 text-gray-900 dark:text-primary-500">
+              <img src="/Logo.svg" alt="RetryHost Logo" className="h-8 w-8" />
+              <span className="text-xl font-bold">RetryHost</span>
+            </a>
+          </div>
           <AccountPage onBack={() => setShowAccountPage(false)} />
         </ProtectedRoute>
       ) : (
