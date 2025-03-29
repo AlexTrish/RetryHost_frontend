@@ -58,7 +58,7 @@ export const translations = {
         title: 'Choose Your Perfect Plan',
         mostPopular: 'Most Popular',
         perMonth: '/month',
-        getStarted: 'Get Started',
+        getStart: 'Get Started',
         plans: {
           starter: 'Starter',
           professional: 'Professional',
@@ -155,7 +155,7 @@ export const translations = {
         title: 'Выберите Свой Идеальный План',
         mostPopular: 'Самый Популярный',
         perMonth: '/месяц',
-        getStarted: 'Начать',
+        getStart: 'Начать',
         plans: {
           starter: 'Базовый',
           professional: 'Профессиональный',
