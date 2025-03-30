@@ -222,7 +222,7 @@ function AppContent() {
         <Route path="/domain" element={<DomainPage />} />
         <Route path="/referral" element={<ReferralPage />} />
         <Route path="/company" element={<CompanyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
+        {/* <Route path="/terms" element={<TermsPage />} /> */}
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

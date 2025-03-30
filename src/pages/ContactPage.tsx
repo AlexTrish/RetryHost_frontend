@@ -75,17 +75,6 @@ export const ContactPage = () => {
                 link="mailto:support@retry.host"
               />
               <ContactCard
-                icon={<Phone />}
-                title="Phone"
-                content="+1 (555) 123-4567"
-                link="tel:+15551234567"
-              />
-              <ContactCard
-                icon={<MapPin />}
-                title="Address"
-                content="123 Hosting Street, Server City, 12345"
-              />
-              <ContactCard
                 icon={<MessageSquare />}
                 title="Live Chat"
                 content="Available 24/7"
@@ -94,7 +83,7 @@ export const ContactPage = () => {
               />
             </div>
 
-            <div className="mt-12">
+            {/* <div className="mt-12">
               <h3 className="text-xl font-bold mb-4">Business Hours</h3>
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
                 <div className="space-y-2">
@@ -112,7 +101,7 @@ export const ContactPage = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
