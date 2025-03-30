@@ -37,37 +37,34 @@ export const VPNPage = () => {
           <h2 className="text-3xl font-bold text-center mb-8">VPN Plans</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <PlanCard
-              name="Basic"
-              price="5.99"
+              name="VPN France"
+              price="1.99"
               features={[
-                "1 Device",
-                "5 Locations",
+                "5 Devices",
+                "Any task",
                 "Unlimited Bandwidth",
-                "Basic Support"
+                "24/7 Support",
               ]}
             />
             <PlanCard
-              name="Premium"
-              price="9.99"
+              name="VPN Netherlands"
+              price="1.99"
               popular={true}
               features={[
                 "5 Devices",
-                "All Locations",
+                "Any task",
                 "Unlimited Bandwidth",
-                "Priority Support",
-                "Ad Blocker"
+                "24/7 Support",
               ]}
             />
             <PlanCard
-              name="Business"
-              price="15.99"
+              name="VPN USA"
+              price="1.99"
               features={[
-                "10 Devices",
-                "All Locations",
+                "5 Devices",
+                "Any task",
                 "Unlimited Bandwidth",
                 "24/7 Support",
-                "Ad Blocker",
-                "Dedicated IP"
               ]}
             />
           </div>
@@ -77,10 +74,10 @@ export const VPNPage = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Server Locations</h2>
             <div className="grid grid-cols-2 gap-4">
-              <LocationCard country="United States" servers="50+" />
-              <LocationCard country="United Kingdom" servers="20+" />
-              <LocationCard country="Germany" servers="15+" />
-              <LocationCard country="Singapore" servers="10+" />
+              <LocationCard country="Netherlands" servers="50+" />
+              <LocationCard country="United States" servers="20+" />
+              <LocationCard country="France" servers="15+" />
+              <LocationCard country="Russia" servers="10+" />
             </div>
           </div>
           <div className="space-y-6">
