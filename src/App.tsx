@@ -33,7 +33,7 @@ function AppContent() {
   });
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState('');
   const { user, login, logout } = useAuth();
   const [loginError, setLoginError] = useState('');
@@ -66,6 +66,11 @@ function AppContent() {
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'en' ? 'ru' : 'en');
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setActiveDropdown('');
   };
 
   return (
@@ -205,7 +210,7 @@ function AppContent() {
             </div>
 
             <button
-              onClick={() => setIsMenuOpen(true)}
+              onClick={() => setIsMobileMenuOpen(true)}
               className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             >
               <Menu className="h-6 w-6" />
@@ -213,6 +218,199 @@ function AppContent() {
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+            onClick={closeMobileMenu}
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3 }}
+              className="fixed inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
+                <h2 className="text-xl font-semibold">Menu</h2>
+                <button
+                  onClick={closeMobileMenu}
+                  className="p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+
+              <div className="p-4 space-y-4">
+                <Link
+                  to="/"
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                >
+                  {t('menu.home')}
+                </Link>
+
+                <div>
+                  <button
+                    onClick={() => setActiveDropdown(activeDropdown === 'services' ? '' : 'services')}
+                    className="w-full flex items-center justify-between px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                  >
+                    <span>{t('menu.services.services')}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${
+                      activeDropdown === 'services' ? 'rotate-180' : ''
+                    }`} />
+                  </button>
+                  {activeDropdown === 'services' && (
+                    <div className="mt-2 ml-4 space-y-2">
+                      <Link
+                        to="/hosting"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.services.virtual')}
+                      </Link>
+                      <Link
+                        to="/vps"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        VPS/VDS
+                      </Link>
+                      <Link
+                        to="/vpn"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        VPN
+                      </Link>
+                      <Link
+                        to="/domain"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.services.domain')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <Link
+                  to="/referral"
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                >
+                  {t('menu.referral')}
+                </Link>
+
+                <div>
+                  <button
+                    onClick={() => setActiveDropdown(activeDropdown === 'about' ? '' : 'about')}
+                    className="w-full flex items-center justify-between px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                  >
+                    <span>{t('menu.about.about')}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${
+                      activeDropdown === 'about' ? 'rotate-180' : ''
+                    }`} />
+                  </button>
+                  {activeDropdown === 'about' && (
+                    <div className="mt-2 ml-4 space-y-2">
+                      <Link
+                        to="/company"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.about.company')}
+                      </Link>
+                      <Link
+                        to="/terms"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.about.terms')}
+                      </Link>
+                      <Link
+                        to="/privacy"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.about.privacy')}
+                      </Link>
+                      <Link
+                        to="/contact"
+                        onClick={closeMobileMenu}
+                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      >
+                        {t('menu.about.contact')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+                  {user ? (
+                    <div className="space-y-4">
+                      <Link
+                        to="/account"
+                        onClick={closeMobileMenu}
+                        className="block w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-center font-semibold"
+                      >
+                        {t('auth.account')}
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          closeMobileMenu();
+                        }}
+                        className="block w-full px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg text-center font-semibold"
+                      >
+                        {t('auth.logout')}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        closeMobileMenu();
+                      }}
+                      className="block w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-center font-semibold"
+                    >
+                      {t('auth.login')}
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-800">
+                  <button
+                    onClick={() => {
+                      toggleTheme();
+                      closeMobileMenu();
+                    }}
+                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                  >
+                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                    <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      toggleLanguage();
+                      closeMobileMenu();
+                    }}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                  >
+                    {i18n.language === 'en' ? 'RU' : 'EN'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -222,62 +420,60 @@ function AppContent() {
         <Route path="/domain" element={<DomainPage />} />
         <Route path="/referral" element={<ReferralPage />} />
         <Route path="/company" element={<CompanyPage />} />
-        {/* <Route path="/terms" element={<TermsPage />} /> */}
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route
           path="/account"
           element={
             <ProtectedRoute>
-              <AccountPage onBack={() => navigate('/')} />
+              <AccountPage />
             </ProtectedRoute>
           }
         />
-
-        
       </Routes>
 
       {/* Footer */}
-            <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-4 gap-8">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.company.company')}</h3>
-                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>{t('footer.company.about')}</li>
-                      <li>{t('footer.company.contact')}</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.services.services')}</h3>
-                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li><a href="#" onClick={() => setCurrentPage('hosting')}>{t('footer.services.hosting')}</a></li>
-                      <li><a href="#" onClick={() => setCurrentPage('vps')}>VPS/VDS</a></li>
-                      <li><a href="#" onClick={() => setCurrentPage('vpn')}>VPN</a></li>
-                      <li>{t('footer.services.domain')}</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.support.support')}</h3>
-                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>{t('footer.support.help')}</li>
-                      <li>support@retry.host</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">{t('footer.legal.legal')}</h3>
-                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                      <li>{t('footer.legal.privacy')}</li>
-                      <li>{t('footer.legal.terms')}</li>
-                      <li>{t('footer.legal.security')}</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center text-gray-600 dark:text-gray-400">
-                  <p>&copy; 2025 RetryHost. All rights reserved.</p>
-                </div>
-              </div>
-            </footer>
+      <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">{t('footer.company.company')}</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                <li>{t('footer.company.about')}</li>
+                <li>{t('footer.company.contact')}</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">{t('footer.services.services')}</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                <li><Link to="/hosting">{t('footer.services.hosting')}</Link></li>
+                <li><Link to="/vps">VPS/VDS</Link></li>
+                <li><Link to="/vpn">VPN</Link></li>
+                <li><Link to="/domain">{t('footer.services.domain')}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">{t('footer.support.support')}</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                <li>{t('footer.support.help')}</li>
+                <li>support@retry.host</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">{t('footer.legal.legal')}</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                <li><Link to="/privacy">{t('footer.legal.privacy')}</Link></li>
+                <li><Link to="/terms">{t('footer.legal.terms')}</Link></li>
+                <li>{t('footer.legal.security')}</li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center text-gray-600 dark:text-gray-400">
+            <p>&copy; 2025 RetryHost. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
 
       {/* Auth Modal */}
       <AnimatePresence>

@@ -1,27 +1,30 @@
 import React from 'react';
 import { Mail, Phone, MapPin, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export const ContactPage = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Contact Us
+            {t('contactpage.headline')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            We're here to help! Reach out to us through any of the following channels
+          {t('contactpage.text')}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 mb-16">
           <div>
-            <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+            <h2 className="text-2xl font-bold mb-6">{t('contactpage.form.headline')}</h2>
             <form className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Name
+                {t('contactpage.form.name')}
                 </label>
                 <input
                   type="text"
@@ -30,7 +33,7 @@ export const ContactPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email
+                {t('contactpage.form.email')}
                 </label>
                 <input
                   type="email"
@@ -39,7 +42,7 @@ export const ContactPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Subject
+                {t('contactpage.form.subject')}
                 </label>
                 <input
                   type="text"
@@ -48,7 +51,7 @@ export const ContactPage = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Message
+                {t('contactpage.form.message')}
                 </label>
                 <textarea
                   rows={4}
@@ -60,48 +63,29 @@ export const ContactPage = () => {
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
               >
-                Send Message
+                {t('contactpage.form.button')}
               </motion.button>
             </form>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+            <h2 className="text-2xl font-bold mb-6">{t('contactpage.info.headline')}</h2>
             <div className="space-y-6">
               <ContactCard
                 icon={<Mail />}
-                title="Email"
+                title={t('contactpage.info.card1.email')}
                 content="support@retry.host"
                 link="mailto:support@retry.host"
+                action={t('contactpage.info.card1.contact')}
               />
               <ContactCard
                 icon={<MessageSquare />}
-                title="Live Chat"
-                content="Available 24/7"
+                title={t('contactpage.info.card2.chat')}
+                content={t('contactpage.info.card2.info')}
                 link="#"
-                action="Start Chat"
+                action={t('contactpage.info.card2.contact')}
               />
             </div>
-
-            {/* <div className="mt-12">
-              <h3 className="text-xl font-bold mb-4">Business Hours</h3>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <div className="space-y-2">
-                  <p className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Monday - Friday</span>
-                    <span className="font-medium">9:00 AM - 6:00 PM EST</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Saturday</span>
-                    <span className="font-medium">10:00 AM - 4:00 PM EST</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Sunday</span>
-                    <span className="font-medium">Closed</span>
-                  </p>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
@@ -123,7 +107,7 @@ const ContactCard = ({ icon, title, content, link, action }) => (
             whileTap={{ scale: 0.98 }}
             className="text-primary-500 hover:text-primary-600 font-medium inline-block mt-2"
           >
-            {action || 'Contact Us'}
+            {action}
           </motion.a>
         )}
       </div>

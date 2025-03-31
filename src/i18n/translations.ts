@@ -197,6 +197,30 @@ export const translations = {
           }
         }
       },
+      contactpage: {
+        headline: 'Contact Us',
+        text: "We're here to help! Reach out to us through any of the following channels",
+        form: {
+          headline: 'Get in Touch',
+          name: 'Name',
+          email: 'Email',
+          subject: 'Subject',
+          message: 'Message',
+          button: 'Send Message'
+        },
+        info: {
+          headline: 'Contact Information',
+          card1: {
+            email: 'Email',
+            contact: 'Contact Us'
+          },
+          card2: {
+            chat: 'Live Chat',
+            info: 'Available 24/7',
+            contact: 'Start Chat'
+          }
+        }
+      },
 
     }
   },
@@ -395,6 +419,30 @@ export const translations = {
           dataRetention: {
             title: "4. Хранение данных",
             description: "Мы храним вашу информацию, пока ваш аккаунт активен или пока это необходимо для предоставления вам услуг. Вы можете запросить удаление данных, связавшись с нашей службой поддержки."
+          }
+        }
+      },
+      contactpage: {
+        headline: 'Наши Контакты',
+        text: 'Мы здесь, чтобы помочь! Свяжитесь с нами по любому из следующих каналов',
+        form: {
+          headline: 'Свяжитесь с Нами',
+          name: 'Имя',
+          email: 'Электронная почта',
+          subject: 'Тема',
+          message: 'Сообщение',
+          button: 'Отправить Сообщение'
+        },
+        info: {
+          headline: 'Контактная информация',
+          card1: {
+            email: 'Электронная почта',
+            contact: 'Связаться с Нами'
+          },
+          card2: {
+            chat: 'Живой Чат',
+            info: 'Доступно 24/7',
+            contact: 'Начать Общение'
           }
         }
       },
