@@ -33,4 +33,5 @@
     rgba(26, 187, 143, 0.1) 100%
   );
   background-size: 400% 400%;
+  animation: shimmer 12s ease infinite;
 }
