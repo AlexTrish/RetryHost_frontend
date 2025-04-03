@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Toaster } from 'react-hot-toast';
