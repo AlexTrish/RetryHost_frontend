@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-*.env
+.env
 
 # Ensure consistent line endings
 # Add a .gitattributes file to enforce LF line endings

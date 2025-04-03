@@ -1,9 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import inject from 'vite-plugin-inject';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    inject({
+			process: 'process/browser',
+		}),
+    react(),
+  ],
   server: {
     port: 5125,
     host: true,
@@ -12,4 +18,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  
 });
