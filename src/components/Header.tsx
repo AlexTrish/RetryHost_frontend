@@ -54,16 +54,16 @@ export default function Header({
                             </button>
                             {activeDropdown === 'services' && (
                                 <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2">
-                                    <Link to="/hosting" className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
+                                    <Link to="/hosting" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
                                         <Cloud className="lucide lucide-cloud h-5 w-5 mr-2" /> {t('menu.services.virtual')}
                                     </Link>
-                                    <Link to="/vps" className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
+                                    <Link to="/vps" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
                                         <Server className="lucide lucide-cloud h-5 w-5 mr-2" /> VPS/VDS
                                     </Link>
-                                    <Link to="/vpn" className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
+                                    <Link to="/vpn" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
                                         <Shield className="lucide lucide-cloud h-5 w-5 mr-2" /> VPN
                                     </Link>
-                                    <Link to="/domain" className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
+                                    <Link to="/domain" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" >
                                         <Globe className="lucide lucide-cloud h-5 w-5 mr-2" /> {t('menu.services.domain')}
                                     </Link>
                                 </div>
@@ -79,16 +79,16 @@ export default function Header({
                             </button>
                             {activeDropdown === 'about' && (
                                 <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2">
-                                    <Link to="/company" className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <Link to="/company" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         {t('menu.about.company')}
                                     </Link>
-                                    <Link to="/terms" className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <Link to="/terms" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         {t('menu.about.terms')}
                                     </Link>
-                                    <Link to="/privacy" className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <Link to="/privacy" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         {t('menu.about.privacy')}
                                     </Link>
-                                    <Link to="/contact" className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <Link to="/contact" onClick={() => { closeMobileMenu(); setActiveDropdown(""); }} className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         {t('menu.about.contact')}
                                     </Link>
                                 </div>
