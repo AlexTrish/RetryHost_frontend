@@ -13,6 +13,12 @@ export const HomePage = () => {
     pricingRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleSignIn = () => {
+    window.dispatchEvent(new CustomEvent('openAuth', { 
+      detail: { isLogin: false }
+    }));
+  };
+
   return (
     <div className="pt-16">
       {/* Hero Section */}
@@ -39,6 +45,7 @@ export const HomePage = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={handleSignIn}
                   className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold flex items-center"
                 >
                   {t('hero.getStarted')} <ChevronRight className="ml-2 h-5 w-5" />

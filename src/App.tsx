@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from "react";
-import { useState, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
+import { useState } from "react";
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -62,6 +62,19 @@ function AppContent() {
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const handleAuthEvent = (event: CustomEvent) => {
+      setIsLogin(event.detail.isLogin);
+      setShowAuthModal(true);
+    };
+
+    window.addEventListener('openAuth', handleAuthEvent as EventListener);
+
+    return () => {
+      window.removeEventListener('openAuth', handleAuthEvent as EventListener);
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

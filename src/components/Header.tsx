@@ -33,6 +33,12 @@ export default function Header({
     setActiveDropdown("");
   };
 
+  const handleLogin = () => {
+    window.dispatchEvent(new CustomEvent('openAuth', { 
+      detail: { isLogin: true }
+    }));
+  };
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 z-40">
@@ -108,8 +114,8 @@ export default function Header({
                             </button>
                         </>
                     ) : (
-                        <button onClick={() => setShowAuthModal(true)} className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold">
-                            {t('auth.login')}
+                        <button onClick={handleLogin} className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold">
+                            {t('auth.loginButton')}
                         </button>
                     )}
                         <button onClick={toggleTheme} className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
