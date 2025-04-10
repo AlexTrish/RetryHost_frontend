@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import confetti from 'canvas-confetti';
+import Cookies from 'js-cookie';
 
-const AuthModal = ({
-  setShowAuthModal,
-  isLogin,
-  setIsLogin,
-  email,
-  setEmail,
-  password,
-  setPassword,
+const AuthModal = ({ 
+  setShowAuthModal, 
+  isLogin, 
+  setIsLogin, 
+  email: propEmail, 
+  setEmail: propSetEmail, 
+  password: propPassword, 
+  setPassword: propSetPassword,
+  onAuthSuccess
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -19,31 +23,133 @@ const AuthModal = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
 
+  const [email, setEmail] = useState(propEmail || '');
+  const [password, setPassword] = useState(propPassword || '');
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (propSetEmail) propSetEmail(value);
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (propSetPassword) propSetPassword(value);
+  };
+
+  let regBool = false;
+
+  const apiBaseUrl = 'https://cp.retry.host';
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { x: 0, y: 0.5 }
+    });
+
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { x: 1, y: 0.5 }
+    });
+  };
+
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      throw new Error(t('auth.passwordMismatch'));
+    }
+
+    const url = `${apiBaseUrl}/?_ga=&_ym_uid=&clicked_button=ok&confirm=testaccount12&country=15&currency_fromsite=126&email=${encodeURIComponent(
+      email
+    )}&email_exists=&field_2=on&func=register&need_manual_action=&newwindow=extform&out=xjson&partner=&passwd=${encodeURIComponent(
+      password
+    )}&project=1&realname=${encodeURIComponent(
+      username
+    )}&recaptcha_type=&redirect_auth=&redirect_params=&sesid=&sfromextform=yes&socnetwork_account_exist=&sok=ok&state=&tzoffset=180,0`;
+
+    regBool = true;
+
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+
+    const data = await response.json();
+
+    if (data.doc?.error) {
+      throw new Error(data.doc.error.msg.$);
+    }
+
+    console.log('Registration successful:', data);
+
+    if (regBool) {
+      toast.success('Welcome to RetryHost! 🎉', {
+        duration: 3000,
+        position: 'top-center',
+      });
+      triggerConfetti();
+
+      Cookies.set('auth_email', email, { expires: 7 });
+      Cookies.set('auth_password', password, { expires: 7 });
+
+      if (onAuthSuccess) {
+        onAuthSuccess({ email });
+      }
+
+      setShowAuthModal(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    const authInfo = `${email}:${password}`;
+    const encodedAuthInfo = encodeURIComponent(authInfo);
+    const url = `${apiBaseUrl}/?authinfo=${encodedAuthInfo}&func=auth&out=xjson`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+
+    const data = await response.json();
+
+    if (data.doc?.error) {
+      throw new Error(data.doc.error.msg.$);
+    }
+
+    console.log('Login successful:', data);
+
+    if (!regBool) {
+      toast.success(`Welcome back, ${email}! 👋`, {
+        duration: 3000,
+        position: 'top-center',
+      });
+
+      Cookies.set('auth_email', email, { expires: 7 });
+      Cookies.set('auth_password', password, { expires: 7 });
+
+      if (onAuthSuccess) {
+        onAuthSuccess({ email }); // Notify parent component of successful login
+      }
+
+      setShowAuthModal(false); // Close the modal
+    }
+
+    return data;
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      if (!isLogin && password !== confirmPassword) {
-        throw new Error(t('auth.passwordMismatch'));
+      if (isLogin) {
+        await handleLogin();
+      } else {
+        await handleRegister();
+        await handleLogin();
       }
 
-      const authInfo = `${email}:${password}`;
-      const encodedAuthInfo = encodeURIComponent(authInfo);
-      const apiBaseUrl = 'https://cp.retry.host';
-      const url = `${apiBaseUrl}/?authinfo=${encodedAuthInfo}&func=auth&out=xjson`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-      });
-
-      if (!response.ok) {
-        throw new Error(t('auth.error'));
-      }
-
-      const data = await response.json();
-      console.log(data);
       setShowAuthModal(false);
     } catch (err) {
       setError(err.message);
@@ -112,7 +218,7 @@ const AuthModal = ({
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange} // Use the new handler
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 placeholder={t('auth.emailPlaceholder')}
               />
@@ -128,7 +234,7 @@ const AuthModal = ({
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange} // Use the new handler
                 className="w-full pl-9 pr-10 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 placeholder={t('auth.passwordPlaceholder')}
               />

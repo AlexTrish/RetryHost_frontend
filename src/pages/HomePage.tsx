@@ -1,26 +1,68 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Cloud, Server, Shield, Globe, CheckCircle } from 'lucide-react';
+import Cookies from 'js-cookie';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { TestimonialSlider } from '../components/TestimonialSlider';
+import AuthModal from '../components/AuthModal';
 
-export const HomePage = () => {
+export const HomePage = ({
+    setShowAuthModal: parentSetShowAuthModal, 
+    user: initialUser
+}:{
+    user: { setShowAuthModal: (value: boolean) => void; 
+    email: string } | null;
+  } ) => {
+  const [user, setUser] = useState(initialUser);
+  const [isLogin, setIsLogin] = useState(true); // Ensure this is correctly initialized
+  const [showAuthModal, setShowAuthModal] = useState(false); // Ensure this is correctly initialized
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Ensure this is correctly initialized
   const { t } = useTranslation();
   const pricingRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate(); // Инициализация useNavigate
+
+  useEffect(() => {
+    const authEmail = Cookies.get('auth_email');
+    const authPassword = Cookies.get('auth_password');
+    setIsLoggedIn(!!authEmail && !!authPassword); // Check if login cookies exist
+  }, []);
 
   const scrollToPricing = () => {
     pricingRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSignIn = () => {
-    window.dispatchEvent(new CustomEvent('openAuth', { 
-      detail: { isLogin: false }
-    }));
+  const handleAuthSuccess = (userData: { email: string }) => {
+    setUser(userData);
+    setIsLoggedIn(true); // Update isLoggedIn state
+    setShowAuthModal(false);
+  };
+
+  const handleLogin = () => {
+    setIsLogin(true);
+    setShowAuthModal(true);
+  };
+
+  const handleRegister = () => {
+    setIsLogin(false);
+    setShowAuthModal(true);
+  };
+
+  const handleAccountRedirect = () => {
+    navigate('/account');
   };
 
   return (
     <div className="pt-16">
+      {showAuthModal && (
+        <AuthModal
+          setShowAuthModal={setShowAuthModal}
+          isLogin={isLogin}
+          setIsLogin={setIsLogin}
+          onAuthSuccess={handleAuthSuccess}
+        />
+      )}
       {/* Hero Section */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 shimmer-bg"></div>
@@ -42,14 +84,25 @@ export const HomePage = () => {
                 {t('hero.description')}
               </p>
               <div className="flex justify-center gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleSignIn}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold flex items-center"
-                >
-                  {t('hero.getStarted')} <ChevronRight className="ml-2 h-5 w-5" />
-                </motion.button>
+                {isLoggedIn ? (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleAccountRedirect}
+                    className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold flex items-center"
+                  >
+                    {t('auth.account')} <ChevronRight className="ml-2 h-5 w-5" />
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleRegister} // Open registration modal
+                    className="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold flex items-center"
+                  >
+                    {t('hero.getStarted')} <ChevronRight className="ml-2 h-5 w-5" />
+                  </motion.button>
+                )}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

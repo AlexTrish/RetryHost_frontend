@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, Bell, Shield, LogOut, CreditCard, Box, Activity, Plus, ChevronRight, Check, X } from 'lucide-react';
 import { ReferralStats } from '../components/ReferralStats';
 import { ScrollReveal } from '../components/ScrollReveal';
+import Cookies from 'js-cookie';
 
 interface PaymentMethod {
   id: string;
@@ -29,12 +29,28 @@ interface Service {
 }
 
 export const AccountPage = () => {
-  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddCard, setShowAddCard] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  // Mock data - in a real app, this would come from your backend
+  const email = Cookies.get('auth_email');
+  const savedPassword = Cookies.get('auth_password');
+
+  if (!email || !savedPassword) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Access Denied
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please log in to access this page
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const balance = 250.00;
   const paymentMethods: PaymentMethod[] = [
     { id: '1', last4: '4242', brand: 'Visa', expiryDate: '12/25' }
@@ -214,7 +230,7 @@ export const AccountPage = () => {
                 <p className="text-gray-600 dark:text-gray-400">{selectedService.description}</p>
               </div>
               <button
-                onClick={() => setSelecteService(null)}
+                onClick={() => setSelectedService(null)}
                 className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <X className="h-6 w-6" />
@@ -404,11 +420,11 @@ export const AccountPage = () => {
                 <div className="text-center mb-6">
                   <div className="w-24 h-24 rounded-full bg-primary-500 mx-auto mb-4 flex items-center justify-center">
                     <span className="text-3xl text-white">
-                      {user?.email.charAt(0).toUpperCase()}
+                      {email?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {user?.email}
+                    {email}
                   </h2>
                 </div>
 
@@ -432,7 +448,11 @@ export const AccountPage = () => {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={logout}
+                    onClick={() => {
+                      Cookies.remove('auth_email');
+                      Cookies.remove('auth_password');
+                      window.location.reload();
+                    }}
                     className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <LogOut className="h-5 w-5" />

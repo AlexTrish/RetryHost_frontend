@@ -1,20 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, Menu, Sun, Moon, X, Cloud, Server, Shield, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../auth/AuthContext";
+import AuthModal from "./AuthModal";
 import '../i18n/i18n';
 
 export default function Header({
         theme,
         toggleTheme,
         toggleLanguage,
-        setShowAuthModal,
+        setShowAuthModal: parentSetShowAuthModal,
         isMobileMenuOpen,
         setIsMobileMenuOpen,
         activeDropdown,
         setActiveDropdown,
+        user: initialUser,
+        handleLogout,
     }: {
         theme: string;
         toggleTheme: () => void;
@@ -24,19 +26,32 @@ export default function Header({
         setIsMobileMenuOpen: (value: boolean) => void;
         activeDropdown: string;
         setActiveDropdown: (value: string) => void;
+        user: { email: string } | null;
+        handleLogout: () => void;
     }) {
+  const [user, setUser] = useState(initialUser);
+  const [showAuthModal, setShowAuthModal] = useState(false); // Local state for modal visibility
+  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and registration
   const { t, i18n } = useTranslation();
-  const { user, logout } = useAuth();
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setActiveDropdown("");
   };
 
+  const handleAuthSuccess = (userData: { email: string }) => {
+    setUser(userData);
+    setShowAuthModal(false);
+  };
+
   const handleLogin = () => {
-    window.dispatchEvent(new CustomEvent('openAuth', { 
-      detail: { isLogin: true }
-    }));
+    setIsLogin(true);
+    setShowAuthModal(true);
+  };
+
+  const handleRegister = () => {
+    setIsLogin(false);
+    setShowAuthModal(true);
   };
 
   return (
@@ -109,7 +124,7 @@ export default function Header({
                             <Link to="/account" className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold">
                                 {t('auth.account')}
                             </Link>
-                            <button onClick={logout} className="px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-semibold">
+                            <button onClick={handleLogout} className="px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-semibold">
                                 {t('auth.logout')}
                             </button>
                         </>
@@ -278,7 +293,7 @@ export default function Header({
                       </Link>
                       <button
                         onClick={() => {
-                          logout();
+                          handleLogout();
                           closeMobileMenu();
                         }}
                         className="block w-full px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg text-center font-semibold"
@@ -288,13 +303,10 @@ export default function Header({
                     </div>
                   ) : (
                     <button
-                      onClick={() => {
-                        setShowAuthModal(true);
-                        closeMobileMenu();
-                      }}
+                      onClick={handleLogin}
                       className="block w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-center font-semibold"
                     >
-                      {t('auth.login')}
+                      {t('auth.loginButton')}
                     </button>
                   )}
                 </div>
@@ -325,6 +337,16 @@ export default function Header({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Render AuthModal conditionally */}
+      {showAuthModal && (
+        <AuthModal
+          setShowAuthModal={setShowAuthModal}
+          isLogin={isLogin}
+          setIsLogin={setIsLogin}
+          onAuthSuccess={handleAuthSuccess}
+        />
+      )}
     </>
   );
 }

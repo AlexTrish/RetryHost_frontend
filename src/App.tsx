@@ -1,13 +1,12 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import { useState } from "react";
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'; // Добавьте импорт Navigate
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider, useAuth } from './auth/AuthContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import Cookies from 'js-cookie';
 import './i18n/i18n';
 import './shimmer.css';
 
@@ -22,7 +21,7 @@ const CompanyPage = lazy(() => import('./pages/CompanyPage').then(module => ({ d
 const TermsPage = lazy(() => import('./pages/TermsPage').then(module => ({ default: module.TermsPage })));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(module => ({ default: module.PrivacyPage })));
 const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ default: module.ContactPage })));
-const AccountPage = lazy(() => import('./pages/AccountPage').then(module => ({ default: module.AccountPage })));
+import { AccountPage } from './pages/AccountPage'; // Use named import for AccountPage
 
 // Lazy load Header and Footer
 const Header = lazy(() => import('./components/Header'));
@@ -51,10 +50,11 @@ function AppContent() {
   const [isLogin, setIsLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState('');
-  const { user, login, logout } = useAuth();
-  const [loginError, setLoginError] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(() => {
+    const savedEmail = Cookies.get('auth_email');
+    const savedPassword = Cookies.get('auth_password');
+    return savedEmail && savedPassword ? { email: savedEmail } : null;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -76,17 +76,11 @@ function AppContent() {
     };
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await login(email, password);
-      setShowAuthModal(false);
-      setLoginError('');
-      setEmail('');
-      setPassword('');
-    } catch (error) {
-      setLoginError('Invalid email or password');
-    }
+  const handleLogout = () => {
+    Cookies.remove('auth_email');
+    Cookies.remove('auth_password');
+    setUser(null);
+    window.location.reload();
   };
 
   const toggleTheme = () => {
@@ -109,35 +103,29 @@ function AppContent() {
           setIsMobileMenuOpen={setIsMobileMenuOpen} 
           activeDropdown={activeDropdown} 
           setActiveDropdown={setActiveDropdown} 
+          user={user} 
+          handleLogout={handleLogout} 
         />
       </Suspense>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/hosting" element={<HostingPage />} />
-          <Route path="/vps" element={<VPSPage />} />
-          <Route path="/vpn" element={<VPNPage />} />
-          <Route path="/domain" element={<DomainPage />} />
-          <Route path="/referral" element={<ReferralPage />} />
-          <Route path="/company" element={<CompanyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route
-            path="/account"
-            element={
-              <ProtectedRoute>
-                <AccountPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/hosting" element={<HostingPage />} />
+        <Route path="/vps" element={<VPSPage />} />
+        <Route path="/vpn" element={<VPNPage />} />
+        <Route path="/domain" element={<DomainPage />} />
+        <Route path="/referral" element={<ReferralPage />} />
+        <Route path="/company" element={<CompanyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route
+          path="/account"
+          element={user ? <AccountPage /> : <Navigate to="/" replace />}
+        />
+      </Routes>
       <Suspense fallback={<PageLoader />}>
         <Footer />
       </Suspense>
-
-      {/* Auth Modal */}
       <AnimatePresence>
         {showAuthModal && (
           <Suspense fallback={<PageLoader />}>
@@ -145,17 +133,10 @@ function AppContent() {
               setShowAuthModal={setShowAuthModal} 
               isLogin={isLogin} 
               setIsLogin={setIsLogin} 
-              email={email} 
-              setEmail={setEmail} 
-              password={password} 
-              setPassword={setPassword} 
-              loginError={loginError} 
-              handleLogin={handleLogin} 
             />
           </Suspense>
         )}
       </AnimatePresence>
-
       <Toaster />
     </div>
   );
@@ -163,11 +144,9 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <ErrorBoundary>
-        <AppContent />
-      </ErrorBoundary>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 
