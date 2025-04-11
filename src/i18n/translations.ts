@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 export const translations = {
   en: {
     translation: {
@@ -8,10 +10,15 @@ export const translations = {
         registerSubtitle: 'Join our community today',
         username: 'Username',
         usernamePlaceholder: 'Enter your username',
+        usernameRequired: 'Username is required',
         email: 'Email',
         emailPlaceholder: 'Enter your email',
+        emailRequired: 'Email is required',
+        referralCode: 'Referral Code (optional)',
+        referralCodePlaceholder: 'Enter your referral code',
         password: 'Password',
         passwordPlaceholder: 'Enter your password',
+        passwordRequired: 'Password is required',
         confirmPassword: 'Confirm Password',
         confirmPasswordPlaceholder: 'Confirm your password',
         loginButton: 'Sign In',
@@ -25,6 +32,59 @@ export const translations = {
         logout: 'Log out',
         or: 'or',
         account: 'My Account'
+      },
+      account: {
+        dashboard: {
+          dash: 'Dashboard',
+          yourRefferal: 'Your referral code: ',
+          yourRefferalLink: 'Your referral link: ',
+          totalRefferals: 'Total referrals: ',
+          activeRefferals: 'Active referrals: ',
+          totalEarnings: 'Total earnings: ',
+          recentReferrals: 'Recent referrals: ',
+          recentNotFound: 'No recent referrals yet.',
+        },
+        service: 'Services',
+        billing: 'Transactions',
+        settings: 'Settings',
+        security: 'Security',
+        balance: 'Balance',
+        addFunds: 'Add Funds',
+        activeServices: 'Active Services',
+        nextPayment: 'Next Payment',
+        dueIn: 'Due in',
+        days: 'days',
+        recentActivity: 'Recent Activity',
+        cryptoPayment: {
+          title: 'Cryptomus Payment',
+          description: 'Pay with your preferred cryptocurrency',
+          amount: 'Amount to Add (USD)',
+          amountPlaceholder: 'Enter amount',
+          button: 'Add Funds with Cryptomus'
+        },
+        transactions: {
+          title: 'Transaction History',
+          date: 'Date',
+          method: 'Payment Method',
+          amount: 'Amount',
+          status: 'Status'
+        },
+        services: {
+          yourServices: 'Your Services',
+          addNew: 'Add New Service',
+          manage: 'Manage',
+          renew: 'Renew',
+          expires: 'Expires',
+          status: {
+            active: 'Active',
+            suspended: 'Suspended',
+            expired: 'Expired'
+          }
+        },
+        common: {
+          comingSoon: 'Coming Soon',
+          loading: 'Loading...',
+        }
       },
       menu: {
         home: 'Home',
@@ -245,10 +305,15 @@ export const translations = {
         registerSubtitle: 'Присоединяйтесь к нам',
         username: 'Имя пользователя',
         usernamePlaceholder: 'Введите имя пользователя',
+        usernameRequired: 'Имя пользователя обязательно для заполнения',
         email: 'Email',
         emailPlaceholder: 'Введите email',
+        emailRequired: 'Email обязателен для заполнения',
+        referralCode: 'Реферальный код (необязательно)',
+        referralCodePlaceholder: 'Введите реферальный код',
         password: 'Пароль',
         passwordPlaceholder: 'Введите пароль',
+        passwordRequired: 'Пароль обязателен для заполнения',
         confirmPassword: 'Подтвердите пароль',
         confirmPasswordPlaceholder: 'Подтвердите пароль',
         loginButton: 'Войти',
@@ -262,6 +327,59 @@ export const translations = {
         logout: 'Выход',
         or: 'или',
         account: 'Мой аккаунт'
+      },
+      account: {
+        dashboard: {
+          dash: 'Панель управления',
+          yourRefferal: 'Ваш реферальный код',
+          yourRefferalLink: 'Ваша реферальная ссылка',
+          totalRefferals: 'Всего рефералов',
+          activeRefferals: 'Активные рефералы',
+          totalEarnings: 'Всего заработано',
+          recentReferrals: 'Недавние рефералы',
+          recentNotFound: 'Недавние рефералы не найдены',
+        },
+        service: 'Услуги',
+        billing: 'Транзакции',
+        settings: 'Настройки',
+        security: 'Безопасность',
+        balance: 'Баланс',
+        addFunds: 'Пополнить баланс',
+        activeServices: 'Активные услуги',
+        nextPayment: 'Следующий платеж',
+        dueIn: 'Через',
+        days: 'дней',
+        recentActivity: 'Последние операции',
+        cryptoPayment: {
+          title: 'Оплата через Cryptomus',
+          description: 'Оплатите любой криптовалютой',
+          amount: 'Сумма пополнения (USD)',
+          amountPlaceholder: 'Введите сумму',
+          button: 'Пополнить через Cryptomus'
+        },
+        transactions: {
+          title: 'История транзакций',
+          date: 'Дата',
+          method: 'Способ оплаты',
+          amount: 'Сумма',
+          status: 'Статус'
+        },
+        services: {
+          yourServices: 'Ваши услуги',
+          addNew: 'Добавить услугу',
+          manage: 'Управление',
+          renew: 'Продлить',
+          expires: 'Истекает',
+          status: {
+            active: 'Активен',
+            suspended: 'Приостановлен',
+            expired: 'Истек'
+          }
+        },
+        common: {
+          comingSoon: 'Скоро будет доступно',
+          loading: 'Загрузка...',
+        }
       },
       menu: {
         home: 'Главная',

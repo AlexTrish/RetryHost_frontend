@@ -107,22 +107,26 @@ function AppContent() {
           handleLogout={handleLogout} 
         />
       </Suspense>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/hosting" element={<HostingPage />} />
-        <Route path="/vps" element={<VPSPage />} />
-        <Route path="/vpn" element={<VPNPage />} />
-        <Route path="/domain" element={<DomainPage />} />
-        <Route path="/referral" element={<ReferralPage />} />
-        <Route path="/company" element={<CompanyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route
-          path="/account"
-          element={user ? <AccountPage /> : <Navigate to="/" replace />}
-        />
-      </Routes>
+      <React.StrictMode>
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/hosting" element={<HostingPage />} />
+            <Route path="/vps" element={<VPSPage />} />
+            <Route path="/vpn" element={<VPNPage />} />
+            <Route path="/domain" element={<DomainPage />} />
+            <Route path="/referral" element={<ReferralPage />} />
+            <Route path="/company" element={<CompanyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route
+              path="/account"
+              element={user ? <AccountPage /> : <Navigate to="/" replace />}
+            />
+          </Routes>
+        </Suspense>
+      </React.StrictMode>
       <Suspense fallback={<PageLoader />}>
         <Footer />
       </Suspense>

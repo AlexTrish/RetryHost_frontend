@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Settings, Bell, Shield, LogOut, CreditCard, Box, Activity, Plus, ChevronRight, Check, X } from 'lucide-react';
+import { User, Settings, Bell, Shield, LogOut, CreditCard, Box, Activity, Plus, ChevronRight, Check, X, Wallet } from 'lucide-react';
 import { ReferralStats } from '../components/ReferralStats';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { useTranslation } from 'react-i18next';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 interface PaymentMethod {
   id: string;
@@ -28,28 +30,108 @@ interface Service {
   };
 }
 
+const toCamelCase = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  } else if (obj && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
+      const value = obj[key];
+      acc[camelKey] = value && typeof value === 'object' && '$' in value ? value.$ : toCamelCase(value);
+      return acc;
+    }, {} as any);
+  }
+  return obj;
+};
+
+const fetchUserData = async (setUserData: (data: { username: string; email: string }) => void) => {
+  const email = Cookies.get('auth_email');
+  const password = Cookies.get('auth_password');
+
+  if (!email || !password) {
+    console.error('Email or password is missing in cookies');
+    return;
+  }
+
+  try {
+    const response = await axios.get(`https://cp.retry.host/?authinfo=${email}:${password}&func=user&out=xjson`);
+    const userData = {
+      username: response.data.doc.elem[0].realname.$,
+      email: response.data.doc.elem[0].email.$,
+    };
+    setUserData(userData);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+
+const fetchTransactionHistory = async (setTransactions: (data: any[]) => void) => {
+  const email = Cookies.get('auth_email');
+  const password = Cookies.get('auth_password');
+
+  if (!email || !password) {
+    console.error('Email or password is missing in cookies');
+    return;
+  }
+
+  try {
+    const response = await axios.get(`https://cp.retry.host/?authinfo=${email}:${password}&func=payment&out=xjson`);
+    const transactions = response.data.doc.elem.map(toCamelCase);
+    setTransactions(transactions);
+  } catch (error) {
+    console.error('Error fetching transaction history:', error);
+  }
+};
+
 export const AccountPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddCard, setShowAddCard] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [userData, setUserData] = useState<{ username: string; email: string } | null>(null);
+  const [transactions, setTransactions] = useState<any[]>([]);
 
-  const email = Cookies.get('auth_email');
-  const savedPassword = Cookies.get('auth_password');
+  useEffect(() => {
+    const email = Cookies.get('auth_email');
+    const password = Cookies.get('auth_password');
 
-  if (!email || !savedPassword) {
+    if (!email || !password) {
+      console.error('Email or password is missing in cookies');
+      return;
+    }
+
+    fetchUserData(setUserData);
+    fetchTransactionHistory(setTransactions);
+  }, []);
+
+  if (!Cookies.get('auth_email') || !Cookies.get('auth_password')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Access Denied
+            {t('auth.accessDenied')}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Please log in to access this page
+            {t('auth.pleaseLogin')}
           </p>
         </div>
       </div>
     );
   }
+
+  if (!userData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            {t('account.common.loading')}
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  const { username, email } = userData;
 
   const balance = 250.00;
   const paymentMethods: PaymentMethod[] = [
@@ -103,11 +185,11 @@ export const AccountPage = () => {
   ];
 
   const menuItems = [
-    { icon: User, label: 'Dashboard', id: 'dashboard' },
-    { icon: Box, label: 'Services', id: 'services' },
-    { icon: CreditCard, label: 'Billing', id: 'billing' },
-    { icon: Settings, label: 'Settings', id: 'settings' },
-    { icon: Shield, label: 'Security', id: 'security' },
+    { icon: User, label: t('account.dashboard.dash'), id: 'dashboard' },
+    { icon: Box, label: t('account.service'), id: 'services' },
+    { icon: Wallet, label: t('account.billing'), id: 'billing' },
+    { icon: Settings, label: t('account.settings'), id: 'settings' },
+    { icon: Shield, label: t('account.security'), id: 'security' },
   ];
 
   const renderDashboard = () => (
@@ -115,20 +197,20 @@ export const AccountPage = () => {
       <ScrollReveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Balance</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('account.balance')}</h3>
             <p className="text-3xl font-bold text-primary-500">${balance.toFixed(2)}</p>
             <button className="mt-4 text-primary-500 hover:text-primary-600 font-medium">
-              Add Funds
+              {t('account.addFunds')}
             </button>
           </div>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Active Services</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('account.activeServices')}</h3>
             <p className="text-3xl font-bold">{services.filter(s => s.status === 'active').length}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Next Payment</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('account.nextPayment')}</h3>
             <p className="text-3xl font-bold text-gray-700 dark:text-gray-300">$29.99</p>
-            <p className="text-sm text-gray-500">Due in 15 days</p>
+            <p className="text-sm text-gray-500">{t('account.dueIn')} 15 {t('account.days')}</p>
           </div>
         </div>
       </ScrollReveal>
@@ -145,7 +227,7 @@ export const AccountPage = () => {
 
       <ScrollReveal delay={0.3}>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('account.recentActivity')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center space-x-3">
@@ -167,7 +249,7 @@ export const AccountPage = () => {
     <div className="space-y-6">
       <ScrollReveal>
         <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-5 rounded-lg">
-          <h3 className="text-lg font-semibold">Your Services</h3>
+          <h3 className="text-lg font-semibold">{t('account.services.yourServices')}</h3>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -175,7 +257,7 @@ export const AccountPage = () => {
             className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium flex items-center space-x-2"
           >
             <Plus className="h-5 w-5" />
-            <span>Add New Service</span>
+            <span>{t('account.services.addNew')}</span>
           </motion.button>
         </div>
       </ScrollReveal>
@@ -260,14 +342,14 @@ export const AccountPage = () => {
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <p className="text-2xl font-bold">${selectedService.price}</p>
-                  <p className="text-gray-500">per month</p>
+                  <p className="text-gray-500">{t('account.perMonth')}</p>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold"
                 >
-                  Purchase Now
+                  {t('account.purchaseNow')}
                 </motion.button>
               </div>
             </div>
@@ -314,7 +396,7 @@ export const AccountPage = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-primary-500">${service.price}</p>
-                  <p className="text-sm text-gray-500">Expires: {new Date(service.expiryDate).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">{t('account.expires')}: {new Date(service.expiryDate).toLocaleDateString()}</p>
                 </div>
               </div>
               
@@ -324,14 +406,14 @@ export const AccountPage = () => {
                   whileTap={{ scale: 0.98 }}
                   className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium"
                 >
-                  Manage
+                  {t('account.services.manage')}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-4 py-2 border border-primary-500 hover:bg-primary-500/10 text-primary-500 rounded-lg font-medium"
                 >
-                  Renew
+                  {t('account.services.renew')}
                 </motion.button>
               </div>
             </div>
@@ -343,53 +425,83 @@ export const AccountPage = () => {
 
   const renderBilling = () => (
     <div className="space-y-6">
-      <ScrollReveal>
+      {/* <ScrollReveal>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Payment Methods</h3>
+          <h3 className="text-lg font-semibold mb-4">Add Funds</h3>
           <div className="space-y-4">
-            {paymentMethods.map((method) => (
-              <div
-                key={method.id}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-              >
-                <div className="flex items-center space-x-3">
-                  <CreditCard className="h-5 w-5 text-primary-500" />
-                  <div>
-                    <p className="font-medium">
-                      {method.brand} ending in {method.last4}
-                    </p>
-                    <p className="text-sm text-gray-500">Expires {method.expiryDate}</p>
-                  </div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+              <div className="flex items-center space-x-3 mb-4">
+                <Wallet className="h-6 w-6 text-primary-500" />
+                <div>
+                  <h4 className="font-semibold">Cryptomus Payment</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Pay with your preferred cryptocurrency
+                  </p>
                 </div>
-                <button className="text-red-500 hover:text-red-600">
-                  Remove
-                </button>
               </div>
-            ))}
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Amount to Add (USD)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Enter amount"
+                  />
+                </div>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold flex items-center justify-center space-x-2"
+                >
+                  <Wallet className="h-5 w-5" />
+                  <span>Add Funds with Cryptomus</span>
+                </motion.button>
+              </div>
+            </div>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowAddCard(true)}
-            className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium flex items-center space-x-2"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Add Payment Method</span>
-          </motion.button>
         </div>
-      </ScrollReveal>
+      </ScrollReveal> */}
 
       <ScrollReveal delay={0.2}>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-4">Billing History</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('account.transactions.title')}</h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div>
-                <p className="font-medium">VPS Server #1</p>
-                <p className="text-sm text-gray-500">March 1, 2025</p>
-              </div>
-              <span className="text-red-500">-$29.99</span>
-            </div>
+            {transactions.map((transaction) => {
+              const statusColor =
+                transaction.status === 'Зачислен'
+                  ? 'font-medium text-primary-500'
+                  : transaction.status === 'Отменен'
+                  ? 'font-medium text-red-500'
+                  : 'text-gray-500';
+
+              return (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                >
+                  <div>
+                    <p className="font-medium">
+                      {transaction.paymethodName || t('account.cryptoPayment.title')}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {transaction.payDateS || t('account.transactions.date')}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className={`${statusColor} block`}>
+                      {transaction.paymethodamountIso}
+                    </span>
+                    <p className="text-sm text-gray-500">{transaction.status}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </ScrollReveal>
@@ -405,7 +517,7 @@ export const AccountPage = () => {
       case 'billing':
         return renderBilling();
       default:
-        return <div>Coming soon...</div>;
+        return <div>{t('account.common.comingSoon')}</div>;
     }
   };
 
@@ -420,12 +532,13 @@ export const AccountPage = () => {
                 <div className="text-center mb-6">
                   <div className="w-24 h-24 rounded-full bg-primary-500 mx-auto mb-4 flex items-center justify-center">
                     <span className="text-3xl text-white">
-                      {email?.charAt(0).toUpperCase()}
+                      {username.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {email}
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white truncate">
+                    {username}
                   </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{email}</p>
                 </div>
 
                 <nav className="space-y-2">
@@ -456,7 +569,7 @@ export const AccountPage = () => {
                     className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <LogOut className="h-5 w-5" />
-                    <span>Logout</span>
+                    <span>{t('auth.logout')}</span>
                   </motion.button>
                 </nav>
               </div>
@@ -471,7 +584,7 @@ export const AccountPage = () => {
       </div>
 
       {/* Add Card Modal */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {showAddCard && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -541,7 +654,7 @@ export const AccountPage = () => {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 };

@@ -22,7 +22,7 @@ const AuthModal = ({
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
-
+  const [referralCode, setReferralCode] = useState('');
   const [email, setEmail] = useState(propEmail || '');
   const [password, setPassword] = useState(propPassword || '');
 
@@ -57,17 +57,28 @@ const AuthModal = ({
   };
 
   const handleRegister = async () => {
+    if (!username.trim()) {
+      throw new Error(t('auth.usernameRequired'));
+    }
+    if (!email.trim()) {
+      throw new Error(t('auth.emailRequired'));
+    }
+    if (!password.trim()) {
+      throw new Error(t('auth.passwordRequired'));
+    }
     if (password !== confirmPassword) {
       throw new Error(t('auth.passwordMismatch'));
     }
 
     const url = `${apiBaseUrl}/?_ga=&_ym_uid=&clicked_button=ok&confirm=testaccount12&country=15&currency_fromsite=126&email=${encodeURIComponent(
       email
-    )}&email_exists=&field_2=on&func=register&need_manual_action=&newwindow=extform&out=xjson&partner=&passwd=${encodeURIComponent(
+    )}&email_exists=&field_2=on&func=register&need_manual_action=&newwindow=extform&out=xjson&partner=1114&passwd=${encodeURIComponent(
       password
     )}&project=1&realname=${encodeURIComponent(
       username
-    )}&recaptcha_type=&redirect_auth=&redirect_params=&sesid=&sfromextform=yes&socnetwork_account_exist=&sok=ok&state=&tzoffset=180,0`;
+    )}&recaptcha_type=&redirect_auth=&redirect_params=&sesid=&sfromextform=yes&socnetwork_account_exist=&sok=ok&state=&tzoffset=180,0&referral_code=${encodeURIComponent(
+      referralCode
+    )}`;
 
     regBool = true;
 
@@ -146,7 +157,7 @@ const AuthModal = ({
       if (isLogin) {
         await handleLogin();
       } else {
-        await handleRegister();
+        await handleRegister(); // Ensure validation is applied here
         await handleLogin();
       }
 
@@ -192,21 +203,39 @@ const AuthModal = ({
 
         <form onSubmit={handleAuth} className="space-y-3">
           {!isLogin && (
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('auth.username')}
-              </label>
-              <div className="relative">
-                <User className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                  placeholder={t('auth.usernamePlaceholder')}
-                />
+            <>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('auth.username')}
+                </label>
+                <div className="relative">
+                  <User className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                    placeholder={t('auth.usernamePlaceholder')}
+                  />
+                </div>
               </div>
-            </div>
+
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('auth.referralCode')}
+                </label>
+                <div className="relative">
+                  <User className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                    placeholder={t('auth.referralCodePlaceholder')}
+                  />
+                </div>
+              </div>
+            </>
           )}
 
           <div className="space-y-1">

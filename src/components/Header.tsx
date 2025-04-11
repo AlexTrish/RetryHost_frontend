@@ -64,7 +64,7 @@ export default function Header({
                         <img src="/Logo.svg" alt="RetryHost Logo" className="h-8 w-8" />
                         <span className="text-2xl font-bold text-primary-500">RetryHost</span>
                     </Link>
-                    <nav className="hidden md:flex items-center space-x-8 ml-8">
+                    <nav className="hidden lg:flex items-center space-x-8 ml-8">
                         <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400">
                             {t('menu.home')}
                         </Link>
@@ -118,7 +118,7 @@ export default function Header({
                     </nav>
                 </div>
 
-                <div className="hidden md:flex items-center space-x-4">
+                <div className="hidden lg:flex items-center space-x-4">
                     {user ? (
                         <>
                             <Link to="/account" className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold">
@@ -141,7 +141,7 @@ export default function Header({
                       </button>
                     </div>
 
-                    <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
                         <Menu className="h-6 w-6" />
                     </button>
                 </div>
@@ -155,7 +155,7 @@ export default function Header({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
             onClick={closeMobileMenu}
           >
             <motion.div
@@ -163,7 +163,7 @@ export default function Header({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-xl"
+              className="fixed inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-xl lg:hidden"
               onClick={e => e.stopPropagation()}
             >
               <div className="p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
